@@ -1,8 +1,10 @@
 spring:
+  config:
+    import: optional:application-secrets.yml
   datasource:
-    url: jdbc:postgresql://localhost:5432/jwt_security
-    username: user
-    password: password
+    url: ${database.url}
+    username: ${database.user}
+    password: ${database.password}
     driver-class_name: org.postgresql.Driver
   jpa:
     hibernate:

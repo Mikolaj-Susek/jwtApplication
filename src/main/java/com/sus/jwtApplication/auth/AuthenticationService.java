@@ -1,13 +1,11 @@
 package com.sus.jwtApplication.auth;
 
-
 import com.sus.jwtApplication.config.JwtService;
 import com.sus.jwtApplication.user.Role;
 import com.sus.jwtApplication.user.User;
 import com.sus.jwtApplication.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,12 +14,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository repository;        // because we need to manipulate database
+    // Repository to perform database operations on User entities
+    private final UserRepository repository;
 
-    private final PasswordEncoder passwordEncoder;  //
+    // Encoder to hash passwords before saving them
+    private final PasswordEncoder passwordEncoder;
 
-    private final JwtService jwtService;            //
+    // Service to generate and validate JWT tokens
+    private final JwtService jwtService;
 
+    // Manager to authenticate user credentials
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
@@ -46,13 +48,15 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = repository.findUserByEmail(request.getEmail())   // find user details in database by email from response
+        // Retrieve user details from the database using the email from the request
+        var user = repository.findUserByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);         // create new token from database user details.
+        // Generate a new JWT token based on the user details
+        var jwtToken = jwtService.generateToken(user);
 
-        return AuthenticationResponse.builder()                 // build response object that will carry generated auth token
+        // Build and return the response object containing the generated authentication token
+        return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
-
 }
